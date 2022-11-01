@@ -1,8 +1,21 @@
+input UserInput {
+  name: String
+  age: Int
+}
+
 type User {
   id: Int!
   name: String!
+  age: Int
 }
 
 type Query {
-  getUser(name: String!): Person
+  helloWorld: String
+  getUser(id: Int!): User
+}
+
+type Mutation {
+  createUser(userInput: UserInput!): User!
+  updateUser(id: Int!, UserInput: UserInput!): User!
+  deleteUser(id: Int!): Boolean!
 }

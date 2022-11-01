@@ -1,25 +1,24 @@
 import { Injectable } from '@nestjs/common';
-import { QueryRepository } from 'src/neo4j/neo4j.service';
-import { User } from 'src/schema/graphql';
+import { User, UserInput } from 'src/schema/graphql';
+import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly queryRepository: QueryRepository) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
-  async getUser(name: string): Promise<User> {
-    const query = await this.queryRepository
-      .initQuery()
-      .raw(`MATCH (user: User) WHERE user.name = "${name}" RETURN user`)
-      .run();
-    console.log(query);
-    if (query?.length > 0) {
-      const {
-        user: { identity, properties },
-      } = query[0];
-      return {
-        id: identity,
-        ...properties,
-      };
-    }
+  async createUser(userInput: UserInput): Promise<User> {
+    return await this.userRepository.createUser(userInput);
+  }
+
+  async deleteUser(id: number): Promise<Boolean> {
+    return await this.userRepository.deleteUser(id);
+  }
+
+  async getUser(id: number): Promise<User> {
+    return await this.userRepository.getUser(id);
+  }
+
+  async updateUser(id: number, userInput: UserInput): Promise<User> {
+    return await this.userRepository.updateUser(id, userInput);
   }
 }
